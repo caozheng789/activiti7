@@ -22,8 +22,9 @@ public class GroupTest {
         //3.部署
         Deployment deploy = repositoryService
                 .createDeployment()
-                .addClasspathResource("diagram/holiday5.bpmn")
-                .name("请假流程 - 用户组")
+                .addClasspathResource("diagram/holiday5.xml")
+                .addClasspathResource("diagram/holiday5.png")
+                .name("请假流程 - 用户组01")
                 .deploy();
 
         log.info("部署流程名称={}",deploy.getName());
@@ -32,7 +33,7 @@ public class GroupTest {
     }
 
     //启动流程实例
-    public static void main2(String[] args) {
+    public static void main(String[] args) {
         //1
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -78,7 +79,7 @@ public class GroupTest {
     }
 
     //接取任务
-    public static void main(String[] args) {
+    public static void main6(String[] args) {
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         TaskService taskService = processEngine.getTaskService();
         //第一个参数 任务id 第二个参数 拾取任务用户名
