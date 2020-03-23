@@ -31,10 +31,9 @@ public class ActivitiDeployment {
         //3.进行部署
         Deployment deploy = repositoryService
                 .createDeployment()
-                .addClasspathResource("diagram/holiday.bpmn")
-                .addClasspathResource("diagram/holiday.png")
-                .name("请假流程")
-                .key("myholiday")
+                .addClasspathResource("diagram/holiday02.bpmn")
+                .addClasspathResource("diagram/diagram01.png")
+                .name("请假流程03")
                 .deploy();
 
 
