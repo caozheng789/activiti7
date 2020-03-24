@@ -18,7 +18,8 @@
 
 
 <img src="${img}" width="132px" height="366px">
-<div style="position: absolute;left:260px; top: 125px; width:85px; height: 55px;">
+<div style="position: absolute;left:${graphicInfo.getX()}px; top: ${graphicInfo.getY()}px;
+        width:${graphicInfo.getWidth()}px; height: ${graphicInfo.getHeight()}px;">
 
 </div>
 </body>

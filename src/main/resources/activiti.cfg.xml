@@ -24,5 +24,6 @@
     <property name="dataSource" ref="dataSource"></property>
     <!--代表是否生成表结构-->
     <property name="databaseSchemaUpdate" value="true"/>
+
     </bean>
 </beans>

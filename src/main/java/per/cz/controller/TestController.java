@@ -1,76 +1,78 @@
 package per.cz.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.*;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Created by Administrator on 2020/3/24.
+ *
+ * @author Administrator
+ * @date 2020/3/24
  */
 @Slf4j
 @Controller
 public class TestController {
-
-
 
     @GetMapping("index")
     public String testIndex(Model model){
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         TaskService taskService = processEngine.getTaskService();
 
-        List<Task> list = taskService
+        Task t = taskService
                 .createTaskQuery()
                 .processDefinitionKey("mytest")
                 .taskAssignee("zhangsan")
-                .list();
-        RuntimeService runtimeService = processEngine.getRuntimeService();
+                .singleResult();
         RepositoryService repositoryService = processEngine.getRepositoryService();
-        for (Task t:list) {
-            log.info("流程实例id={}",t.getProcessInstanceId());
+        //查询历史任务
+        HistoryService historyService = processEngine.getHistoryService();
 
-            ProcessInstance processInstance = runtimeService
-                    .createProcessInstanceQuery()
-                    .processInstanceId(t.getProcessInstanceId())
-                    .singleResult();
-            //取出流程部署id
-            String definitionId = processInstance.getProcessDefinitionId();
-            ProcessDefinition processDefinition = repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionId(definitionId)
-                    .singleResult();
-
-            log.info("流程部署id={}",processDefinition.getDeploymentId());
-            model.addAttribute("img","/diagram/holiday5.png");
-            model.addAttribute("taskId",processDefinition.getDeploymentId());
-
-            //查询任务坐标，用来显示高亮
-
-//            ProcessDefinitionEntity entity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(definitionId);
-//            entity.get
-
-            return "index";
+        //查询任务坐标，用来显示高亮
+        //获取节点信息
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(t.getProcessDefinitionId());
+        if(bpmnModel != null) {
+            Collection<FlowElement> flowElements = bpmnModel.getMainProcess().getFlowElements();
+            for(FlowElement e : flowElements) {
+                System.out.println("flowelement id:" + e.getId() + "  name:" + e.getName() + "   class:" + e.getClass().toString());
+            }
         }
-        return null;
+        //根据流程定义id 获取BpmnModel
+        //获取当前任务坐标
+        FlowElement flowElement = bpmnModel.getFlowElement(t.getTaskDefinitionKey());
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowElement.getId());
+        log.info("graphicInfo.getX() = {}" , graphicInfo.getX());
+        log.info("graphicInfo.getY() ={} " , graphicInfo.getY());
+        log.info("graphicInfo.getHeight() = {}" , graphicInfo.getHeight());
+        log.info("graphicInfo.getWidth() = {}" , graphicInfo.getWidth());
+        log.info("流程实例id={}",t.getProcessInstanceId());
+        log.info("流程定义id 任务中获取 ={}",t.getProcessDefinitionId());
+        log.info("任务id={}",t.getTaskDefinitionKey());
+        model.addAttribute("img","/diagram/holiday5.png");
+        model.addAttribute("graphicInfo",graphicInfo);
+
+        List<HistoricActivityInstance> historys = historyService.createHistoricActivityInstanceQuery()
+                .processInstanceId(t.getProcessInstanceId())
+                .orderByHistoricActivityInstanceStartTime()
+                .asc()
+                .list();
+
+        for (HistoricActivityInstance hai:historys) {
+            log.info("流程活动id{},活动名称{}",hai.getActivityId(),hai.getActivityName());
+            log.info("流程定义id{},流程实例id{}",hai.getProcessDefinitionId(),hai.getProcessInstanceId());
+        }
+
+        return "index";
+            
+        
+      
     }
 
 
