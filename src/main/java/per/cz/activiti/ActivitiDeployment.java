@@ -36,8 +36,6 @@ public class ActivitiDeployment {
                 .name("请假流程03")
                 .deploy();
 
-
-
         //4.输出部署信息
         log.info("流程名称 = {}，流程id={}",deploy.getName(),deploy.getId());
     }

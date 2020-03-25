@@ -15,12 +15,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import per.cz.entity.BpmsActivityTypeEnum;
+import per.cz.util.IOUtil;
 import per.cz.util.UtilMisc;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
@@ -40,16 +41,12 @@ public class HeightLightController {
      * 查看流程图
      */
     @RequestMapping(value = "/image", method = RequestMethod.GET)
-    public HttpServletResponse image(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void image(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        InputStream stream = getResourceDiagramInputStream("7501");
 
-        InputStream stream = getResourceDiagramInputStream("2501");
+        IOUtil.getBpmnToWeb(response,stream);
 
-        OutputStream out = response.getOutputStream();
-        IOUtils.copy(stream,out);
-
-        log.info("stream ={}",stream);
-        return response;
 
 //        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 //        RepositoryService repositoryService = processEngine.getRepositoryService();
@@ -171,7 +168,8 @@ public class HeightLightController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
         HistoryService historyService = processEngine.getHistoryService();
 
-
+        InputStream imageStream = null;
+//        FileOutputStream output = null;
         try {
             // 获取历史流程实例
             HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(id).singleResult();
@@ -192,18 +190,22 @@ public class HeightLightController {
 
             // 使用默认配置获得流程图表生成器，并生成追踪图片字符流
             DefaultProcessDiagramGenerator diagramGenerator=new DefaultProcessDiagramGenerator();
-            InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", executedActivityIdList, flowIds,
+            imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", executedActivityIdList, flowIds,
                     "宋体", "微软雅黑", null, 2.0);
 
-            FileOutputStream output=new FileOutputStream(new File("d:/test.png"));
-            IOUtils.copy(imageStream, output);
+//            output=new FileOutputStream(new File("d:/test.png"));
+//            IOUtils.copy(imageStream, output);
 
-            output.close();
-            imageStream.close();
             return imageStream;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }finally {
+            try {
+                imageStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

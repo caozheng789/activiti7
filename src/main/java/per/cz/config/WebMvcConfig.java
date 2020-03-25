@@ -27,23 +27,24 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 
 
-    @Bean
-    public HttpMessageConverter<String> responseBodyConverter() {
-        StringHttpMessageConverter converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
-        return converter;
-    }
+//    @Bean
+//    public HttpMessageConverter<String> responseBodyConverter() {
+//        StringHttpMessageConverter converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+//        return converter;
+//    }
 
 
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        super.configureMessageConverters(converters);
-        converters.add(responseBodyConverter());
-    }
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        super.configureMessageConverters(converters);
+//        converters.add(responseBodyConverter());
+//    }
 
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/diagram/**").addResourceLocations("classpath:/diagram/");
+        registry.addResourceHandler("/layui/**").addResourceLocations("classpath:/layui/");
         super.addResourceHandlers(registry);
     }
 

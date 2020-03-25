@@ -22,9 +22,9 @@ public class GroupTest {
         //3.部署
         Deployment deploy = repositoryService
                 .createDeployment()
-                .addClasspathResource("diagram/holiday5.xml")
-                .addClasspathResource("diagram/holiday5.png")
-                .name("请假流程 - 用户组01")
+                .addClasspathResource("diagram/holiday5.bpmn")
+//                .addClasspathResource("diagram/holiday5.png")
+//                .name("请假流程 - 用户组01")
                 .deploy();
 
         log.info("部署流程名称={}",deploy.getName());
@@ -37,7 +37,7 @@ public class GroupTest {
         //1
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
-        ProcessInstance mytest = runtimeService.startProcessInstanceByKey("mytest");
+        ProcessInstance mytest = runtimeService.startProcessInstanceByKey("myholiday1");
         //
         log.info(mytest.getProcessInstanceId());
         log.info(mytest.getId());

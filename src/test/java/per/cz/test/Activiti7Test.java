@@ -26,7 +26,7 @@ public class Activiti7Test {
 
     @Test
     public void testInitTableDefault(){
-        //使用默认创建方式的约定条件；1.activiti.cfg.xml 2.bean中processEngineConfiguration
+        //使用默认创建方式的约定条件；1.deployment.cfg.xml 2.bean中processEngineConfiguration
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         log.info("/3.输出processEngine 对象 = {}",processEngine);
     }
