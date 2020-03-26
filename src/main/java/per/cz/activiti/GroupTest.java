@@ -22,7 +22,7 @@ public class GroupTest {
         //3.部署
         Deployment deploy = repositoryService
                 .createDeployment()
-                .addClasspathResource("diagram/holiday5.bpmn")
+                .addClasspathResource("diagram/holiday5.xml")
 //                .addClasspathResource("diagram/holiday5.png")
 //                .name("请假流程 - 用户组01")
                 .deploy();

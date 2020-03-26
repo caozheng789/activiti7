@@ -43,7 +43,7 @@ public class HeightLightController {
     @RequestMapping(value = "/image", method = RequestMethod.GET)
     public void image(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        InputStream stream = getResourceDiagramInputStream("7501");
+        InputStream stream = getResourceDiagramInputStream("2501");
 
         IOUtil.getBpmnToWeb(response,stream);
 
